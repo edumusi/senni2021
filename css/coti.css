@@ -1,0 +1,123 @@
+/* CSS Document */
+
+@page {
+	  margin: 0;
+	}
+	
+	body {
+	  margin-top: 3.5cm;
+	  margin-bottom: 1cm;
+	  margin-left: 3.5cm;
+	  margin-right: .5cm;	  
+	  text-align: justify;	 
+	}
+	
+	div.header,
+	div.footer {
+	  position: fixed;	 
+	  width: 100%;
+	  border: 0px solid #888;
+	  overflow: hidden;
+	  padding: 0.1cm;
+	}
+	
+	div.leftpane {
+		position: fixed;		
+		width: 3cm;		
+		top: 2cm;
+	  	bottom: 2cm;
+		height: 28cm;
+		vertical-align:middle;		
+	}
+	
+	div.header {
+	  top: 0cm;
+	  left: 0cm;
+	  background-image:url(images/encabezadoCotizacion.png);	  
+	  height: 2cm;
+	}
+	
+	div.footer {
+	  bottom: 0cm;
+	  left: 0cm;
+	  background-image:url(images/pieCotizacion.png);	 
+	  height: 2cm;
+	}
+	
+	div.footer table {
+	  width: 100%;
+	  text-align: center;
+	}
+	
+	hr {
+	  page-break-after: always;
+	  border: 0;
+	}  
+	.page-number:before {
+	  content: "Página " counter(page);
+	}
+
+
+span.CotiDerechaBold
+{	
+	font-size:14px;
+	font-weight: bold;
+	font:sans-serif;	
+	text-align:right;
+	vertical-align:middle;	
+}
+
+td.CotiIzquierdaBold
+{	
+	font-size:13px;
+	font-weight: bold;
+	font:sans-serif;	
+	text-align:left;
+	vertical-align:middle;	
+}
+
+td.CotiTextJus
+{	
+	font-size:12px;
+	font-weight:normal;
+	font:sans-serif;
+	text-align: justify;
+	vertical-align:middle;	
+}
+
+td.CotiTextJusChico
+{	
+	font-size:10px;
+	font-weight:normal;
+	font:sans-serif;
+	text-align: justify;
+	vertical-align:middle;	
+}
+
+td.CotiTextCenterBold
+{
+	font-size:13px;
+	font-weight: bold;
+	font:sans-serif;	
+	text-align:center;
+	vertical-align:middle;
+}
+
+td.CotiTextCenterBoldAzul
+{
+	font-size:13px;
+	font-weight: bold;
+	font:sans-serif;	
+	text-align:center;
+	vertical-align:middle;
+	background-color:#5B9BD5;
+}
+td.CotiTextCenterBoldAzulCl
+{
+	font-size:13px;
+	font-weight: bold;
+	font:sans-serif;	
+	text-align:center;
+	vertical-align:middle;
+	background-color:#9CC2E5;
+}

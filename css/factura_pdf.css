@@ -1,0 +1,171 @@
+
+       @page { margin: 0; }
+
+       body {  margin-top: 2.5cm;
+               margin-bottom: 2.5cm;
+               margin-left: 0.5cm;
+               margin-right: 0.5cm;  
+               text-align: justify;
+               font-size:9pt;
+               font-weight:normal;
+               font:sans-serif;
+             }
+             
+       div.header,div.footer {
+         position: fixed;	 
+         width: 100%;
+         border: 0px solid #888;
+         overflow: hidden;
+         padding: 0.1cm;
+       }		
+
+       div.footer {
+         bottom: -0.2cm;
+         left: 0cm;         
+         height: 2.0cm;
+         padding: 0cm 0cm .4cm 0cm;
+         color: black;
+       }
+       
+       div.header {
+         top: 0cm;
+         left: 0cm;         
+         height: 2.0cm;
+       }
+
+       div.logoFactura {
+        background-image:url(../images/Logo.png);
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-position: center;
+      }
+
+      div.footer table {width: 100%;
+        text-align: center;
+      }
+
+      hr { page-break-after: always;  }
+
+      .page_break { page-break-before: always; }
+      .page-number:before { content: "PÁGINA " counter(page); }
+      
+      div.footer table {width: 100%;
+         text-align: center;
+       }
+       hr { page-break-after: always;
+            border: 0;
+          }  
+
+       
+        	      
+        
+        td.center{ text-align: center; }
+        td.left  { text-align: left;   }
+        td.right { text-align: right;  }
+        
+        td.negritas{text-align: justify;
+                    font-size:10pt;
+                    font-weight: bolder;
+                    font:sans-serif;
+                  }
+                  
+        td.negritasLeft9 { text-align: left;
+                              font-size:9pt;
+                              font-weight: bold;
+                              font:sans-serif;
+                            }
+        td.negritasRight9 { text-align: right;
+                              font-size:9pt;
+                              font-weight: bold;
+                              font:sans-serif;
+                            }  
+        td.normalLeft9 { text-align: left;
+                              font-size:9pt;                              
+                              font:sans-serif;
+                            }
+        td.normalRight9 { text-align: right;
+                              font-size:9pt;                              
+                              font:sans-serif;
+                            }                              
+
+
+        td.negritasCenter{text-align: center;
+                          font-size:10pt;
+                          font-weight: bold;
+                          font:sans-serif;
+                        }
+
+        td.negritasCenter12 { text-align: center;
+                              font-size:12pt;
+                              font-weight: bold;
+                              font:sans-serif;
+                            }       
+        
+        td.fondoColorTotal { background: #FFD012; 
+                             color: #FFFFFF;
+                             font-size:14pt;
+                            font-weight: bold;                             
+                           }
+        td.fondoAzulCentro { background: #4396FF; 
+                             color: #FFFFFF;
+                             font-size:14pt;
+                            font-weight: bold;
+                            text-align: center;
+                           } 
+        th.fondoGrisCentro,td.fondoGrisCentro { background: #eee; 
+                             color: #000;
+                             font-size:11pt;
+                            font-weight: bold;
+                            text-align: center;
+                           } 
+        th.fondoGrisLeft,td.fondoGrisLeft { background: #eee; 
+                             color: #000;
+                             font-size:10pt;
+                            font-weight: bold;
+                            text-align: left;
+                           }                            
+
+     td.fondoColor{ background: #5B9BD5; color: #FFFFFF; }               
+
+    .recuadroGris { border-radius: 16px;
+                    padding: 0 2px;
+                    border: 1px solid rgb(170, 168, 168);
+                    background: #dadada;
+                    color: #5B9BD5;
+                  }
+
+    .recuadroAzul { border-radius: 8px;
+                    padding: 0 2px;
+                    border: 1px solid rgb(3, 93, 211);
+                    background: #CEDFEA;    
+                  }       
+
+    .recuadroGrisClaro { border-radius: 16px;
+                         padding: 0 2px;
+                         border: 1px solid #5B9BD5;
+                      }
+
+    .cuadroLinea {  padding: 0 2px;
+                    border-radius:4px 4px 0 0;
+                    border: 1px solid #ccc;
+                    box-shadow: 10px 10px 20px grey;                    
+                  }              
+
+    div.finHoja { border-style: solid;    
+                  border-color: #FFFFFF #FFFFFF #f2f2f2 #FFFFFF;
+                }
+                  
+    table.edoCta { border-collapse: collapse;
+                   width: 100%;    
+                 }
+
+    th.edoCta, td.edoCta { text-align: justify;
+                           padding: 8px; 
+                           border-bottom: solid #ddd;
+                         }
+
+    tr.fondoBackGris { background: #f2f2f2 }
+
+    th.edoCta { background: #4396FF; 
+                color: #FFFFFF;
+              }

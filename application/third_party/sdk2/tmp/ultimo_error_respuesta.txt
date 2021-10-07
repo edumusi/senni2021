@@ -1,0 +1,1 @@
+a:3:{s:16:"codigo_mf_numero";i:7;s:15:"codigo_mf_texto";s:53:"ERROR AL GENERAR SELLO, NO SE PUDO LEER LLAVE PRIVADA";s:9:"ejecucion";d:17.174999999999997;}
