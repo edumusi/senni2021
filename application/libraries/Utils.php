@@ -30,14 +30,14 @@ class Utils
                 else
                     { return $param; }                    
 	}  
-        
+          
 	public function senniDateFormat($paramDate) 
 	{
 		if ( empty($paramDate) )
-                    { return NULL; }                    
+                    { return NULL; }
                 else
                     {   $paramDateStr = DateTime::createFromFormat('j#n#Y', $paramDate);
-                        return $paramDateStr ->format('Y/m/j');                         
+                        return $paramDateStr ->format('Y/m/d');                         
                     }                    
 	}
 

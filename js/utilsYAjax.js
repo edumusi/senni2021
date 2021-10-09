@@ -2784,7 +2784,7 @@ function openModalReciboNominaAX(baseURL, correo)
 						  $("#RegistroPatronal" ).val(resp['emisor']['RegistroPatronal']);						  
 						/************ EMISOR ************/												
 
-						/************ EMPLEADO ************/
+						/************ EMPLEADO ************/ 
 						$("#nombre_emp" ).val(resp['empleado']['apellidos']+" "+resp['empleado']['nombre']);
 						$("#correo_emp" ).val(resp['empleado']['correo']);
 						$("#puesto_emp" ).val(resp['empleado']['puesto']);
@@ -3637,13 +3637,14 @@ function openModalTimbrarAX(baseURL, id_pedido, rfc)
 																+"<td> <i class='fa fa-credit-card pagFact pointer' id='"+value['id_factura']+"' folio='"+value['folio']+"'> </i> </td>"
 																+"<td> <i class='fa fa-remove cancelFact pointer'   id='"+value['id_factura']+"' folio='"+value['folio']+"'> </i> </td>"
 														+"</tr>" );
-
+ 
 								  let adjunto  = value["adjunto"];
 								  let filaname = value["filename"];
+								  let xmlFilename = isEmpty(filaname) == true?"":filaname.replace(".pdf", "_cfdi3_3.xml")
 
 								  iconF += "<a href='"+value["adjunto"]+"' target='_blank'> <img title='"+value["desc_adjunto"]+"' src='"+$("#baseURL").val()+"images/logoPDF.png' width='18px' height='18px'> <small>"+value["filename"]+"</small>"
 								  		+  "</a>&nbsp;&nbsp;"
-										+  "<a href='"+(adjunto.replace(".pdf", "_cfdi3_3.xml"))+"' target='_blank'> <img title='"+(adjunto.replace(".pdf", "_cfdi3_3.xml"))+"' src='"+$("#baseURL").val()+"images/logoXML.png' width='18px' height='18px'> <small>"+(filaname.replace(".pdf", "_cfdi3_3.xml"))+"</small>"
+										+  "<a href='"+(adjunto.replace(".pdf", "_cfdi3_3.xml"))+"' target='_blank'> <img title='"+(adjunto.replace(".pdf", "_cfdi3_3.xml"))+"' src='"+$("#baseURL").val()+"images/logoXML.png' width='18px' height='18px'> <small>"+xmlFilename+"</small>"
 								  		+  "</a>&nbsp;&nbsp;"
 										; 
 								});
@@ -4768,12 +4769,14 @@ function traeDatosFacturaAX(id_factura){
 			type	  : 'post',
 			dataType  : 'json',
 			beforeSend: function () { },
-			success:  function (response) 
+			success:  function (response)
 			{		
 				$("#uuidREP"	   ).val(response['uuid']);
 				$("#id_pedidoREP"  ).val(response['folio']);
+				$("#id_facturaREP" ).val(response['id_factura']);
 				$("#serieREP"	   ).val(response['serie']);
 				$("#monedaREP"	   ).val(response['moneda']);
+				$("#tipocambioREP" ).val(response['tipocambio']);
 				$("#metodo_pagoREP").val(response['metodo_pago']);
 				$("#rfcReceptorREP").val(response['rfc']);
 				$("#rsReceptorREP" ).val(response['nombre']);

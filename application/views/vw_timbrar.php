@@ -265,12 +265,14 @@ echo '  <div class="row">
                 <td width="20%" > <a href="javascript:vistaPreviaAX(\'vp_rep\');" class="button button-secondary">Vista previa REP</a> </td>
                 <td width="20%" > <a href="javascript:timbrarREPAX();" class="button button-secondary">Timbrar REP</a> </td>
             </tr>    
-            </table><br>'; 
+            </table><br>';
 
             echo form_input(array('name' => 'uuidREP'       , 'id' =>'uuidREP'       ,'type'=>'hidden','value' =>'' ) );
             echo form_input(array('name' => 'id_pedidoREP'  , 'id' =>'id_pedidoREP'  ,'type'=>'hidden','value' =>'' ) );
+            echo form_input(array('name' => 'id_facturaREP' , 'id' =>'id_facturaREP'  ,'type'=>'hidden','value' =>'' ) );
             echo form_input(array('name' => 'serieREP'      , 'id' =>'serieREP'      ,'type'=>'hidden','value' =>'' ) );
             echo form_input(array('name' => 'monedaREP'     , 'id' =>'monedaREP'     ,'type'=>'hidden','value' =>'' ) );
+            echo form_input(array('name' => 'tipocambioREP' , 'id' =>'tipocambioREP' ,'type'=>'hidden','value' =>'' ) );
             echo form_input(array('name' => 'metodo_pagoREP', 'id' =>'metodo_pagoREP','type'=>'hidden','value' =>'' ) );
             echo form_input(array('name' => 'rfcReceptorREP', 'id' =>'rfcReceptorREP','type'=>'hidden','value' =>'' ) );
             echo form_input(array('name' => 'rsReceptorREP' , 'id' =>'rsReceptorREP','type'=>'hidden','value' =>'' ) );

@@ -1054,7 +1054,7 @@ public function rnomina($msj='')
 		$datos['factura']['fecha_expedicion'] = date('Y-m-d\TH:i:s', time() - 120);
 		$datos['factura']['folio'] 			  = $datos['id_recibo'];
 		$datos['factura']['forma_pago'] 	  = '99';
-		$datos['factura']['LugarExpedicion']  = $this->input->post('cve_entidad_emp');
+		$datos['factura']['LugarExpedicion']  = $dbFiscal['cp_fiscal'];//'77712';
 		$datos['factura']['metodo_pago'] 	  = 'PUE';
 		$datos['factura']['moneda'] 		  = 'MXN';
 		$datos['factura']['serie'] 			  = ($portal == NULL ? SERIE_SAT : SERIE_SAT_SENNI);//'A';
@@ -1110,7 +1110,7 @@ public function rnomina($msj='')
 		$datos['nomina12']['Receptor']['PeriodicidadPago'] = $this->input->post('periodo_emp');//'04';
 		$datos['nomina12']['Receptor']['TipoContrato'] 	   = $this->input->post('tipo_contrato_emp');//'01';
 		$datos['nomina12']['Receptor']['TipoRegimen'] 	   = $this->input->post('tipo_regimen_emp');//'02';
-		
+		  
 		// Opcionales de Receptor
 		//$datos['nomina12']['Receptor']['Antiguedad'] = 'P21W';
 		$datos['nomina12']['Receptor']['Banco'] 		 	     = $this->input->post('banco_emp');//'021';

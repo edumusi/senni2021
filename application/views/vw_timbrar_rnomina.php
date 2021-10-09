@@ -23,9 +23,9 @@ echo '  <div class="row">
         </ul>';
         if ( $this->user['0']['tipo'] == PERFIL_ADMIN)        
         {
-        echo '
+        echo ' 
         <div id="tabs-1"> <!-- Emisor -->
-            <table style="width:100%">            
+            <table style="width:100%">
             <tr>
                 <td width="40%" style="text-align:right">RFC: </td>
                 <td width="60%">'. form_input(array('class'     => 'timb text-input ', 
@@ -182,8 +182,7 @@ echo '  <div class="row">
                 <td width="18%" style="text-align:left">'.form_input(array('class'      => 'timb text-input ', 
                                                                             'size'      => '10', 
                                                                             'name'      => 'cve_entidad_emp', 
-                                                                            'id'        => 'cve_entidad_emp',
-                                                                            'readonly'  => 'readonly',
+                                                                            'id'        => 'cve_entidad_emp',                                                                            
                                                                             'maxlength' => '50'))
                                                                             .'</td>
                                                                         </tr>
