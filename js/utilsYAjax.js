@@ -86,7 +86,8 @@ function submitFormReset(forma)
 
 function calcularProfit()
 {
-  var v_costos	     = 0;
+  var v_costos_mxn	 = 0;
+  var v_costos_usd	 = 0;
   var v_ventas	     = 0;
   var profit	     = 0;
   var com_ven        = 0;
@@ -94,25 +95,69 @@ function calcularProfit()
   var fa_por_ventas  = Number($("#comision_ventas_por"     ).val());
   var fa_por_ope     = Number($("#comision_operaciones_por").val());
   var profit_origen  = Number($("#profit_origen"           ).val());
+  var monedaVenta 	 = $('input:radio[name=moneda]:checked').val();
+  var monedaVentaCur2= monedaVenta=="MXN" ? "USD":"MXN";
+  var tipo_cambioVenta = Number($("#tipo_cambio"           ).val());
    
- 
-  $(".subCostos").each(function() { v_costos = v_costos + Number($(this).val()); });	  
+  $(".subCostos").each(function() { let objName    = $(this).attr("name");
+									let nameTC	   = objName.replace("subTot", "tipo_cambio");
+									let nameMoneda = objName.replace("subTot", "moneda");
+									var monedaCosto= $('input:radio[name='+nameMoneda+']:checked').val();
+									var tcCosto	   = Number($("#"+nameTC).val());
+
+									if(monedaCosto == "MXN")
+									{
+										v_costos_mxn = v_costos_mxn +  Number($(this).val()); 
+										v_costos_usd = v_costos_usd + (Number($(this).val()) / tcCosto); 
+									}
+									else
+									{
+										v_costos_mxn = v_costos_mxn + (Number($(this).val()) * tcCosto); 
+										v_costos_usd = v_costos_usd +  Number($(this).val()); 
+									}									
+
+								  });
+
   $(".subVentas").each(function() { v_ventas = v_ventas + Number($(this).val()); });
  
-  profit   = v_ventas - v_costos - profit_origen;
-
-  $("#costo_t_l").text("$ "+$.number(v_costos,2, '.', ',' ));
-  $("#venta_t_l").text("$ "+$.number(v_ventas,2, '.', ',' ));
-
-  $("#costo_t_l_f").text("$ "+$.number(v_costos,2, '.', ',' ));
-  $("#venta_t_l_f").text("$ "+$.number(v_ventas,2, '.', ',' ));
+  $("#costo_t_l_f_mxn").text("$ "+$.number(v_costos_mxn,2, '.', ',' ));
+  $("#costo_t_l_f_usd").text("$ "+$.number(v_costos_usd,2, '.', ',' ));
+  $("#total_costos_mxn").val (v_costos_mxn);
+  $("#total_costos_usd").val (v_costos_usd);
   
-  $("#costo_t").val(v_costos);
-  $("#venta_t").val(v_ventas);
-            
+  $("#venta_t"    ).val (v_ventas);
+  $("#venta_t_l"  ).text("$ "+$.number(v_ventas,2, '.', ',' ));
+  
+  if(monedaVenta == "MXN")
+  {
+	$("#venta_t_l_f_cur1").text("$ "+$.number(v_ventas,2, '.', ',' ) + " " + monedaVenta);
+	$("#venta_t_l_f_cur2").text("$ "+$.number(v_ventas/tipo_cambioVenta,2, '.', ',' ) + " " + monedaVentaCur2);
+	$("#total_ventas_mxn").val (v_ventas);
+  	$("#total_ventas_usd").val (v_ventas/tipo_cambioVenta);
+
+	$("#costo_t"    ).val (v_costos_mxn);
+    $("#costo_t_l"  ).text("$ "+$.number(v_costos_mxn,2, '.', ',' ));
+	$(".monedaSpan" ).html("MXN");
+
+	profit  = v_ventas - v_costos_mxn - profit_origen;
+  }
+  else
+  {
+	$("#venta_t_l_f_cur1").text("$ "+$.number(v_ventas,2, '.', ',' ) + " " + monedaVenta);
+	$("#venta_t_l_f_cur2").text("$ "+$.number(v_ventas*tipo_cambioVenta,2, '.', ',' ) + " " + monedaVentaCur2);
+	$("#total_ventas_mxn").val (v_ventas*tipo_cambioVenta);
+	$("#total_ventas_usd").val (v_ventas);
+
+	$("#costo_t"    ).val (v_costos_usd);
+    $("#costo_t_l"  ).text("$ "+$.number(v_costos_usd,2, '.', ',' ));
+	$(".monedaSpan" ).html("USD");
+	profit  = v_ventas - v_costos_usd - profit_origen;
+  }
+  
   com_ven = (fa_por_ventas/100) * profit;
   com_ven = com_ven.toFixed(3);
   profit  = profit - com_ven;
+
   $("#comision_ventas_montoLabel").html("$ "+$.number(com_ven, 2, '.', ',' ) );
   $("#comision_ventas"           ).val(com_ven);
   
@@ -194,34 +239,47 @@ function addRowProd(baseURL) {
 		var num_prod = Number($("#num_prod").val()) + 1;	
 		
 		var myRow = '<div class="row">'+
-            '<section class="col col-3">'+
-            '    <label class="label">Producto: </label>'+
-            '    <label class="input"><i class="icon-append fa fa-tag"></i>'+
-            '    <input type="text" name="nombre'+num_prod+'" value="" class="validate[custom[onlyLetterNumber]] text-input" id="nombre'+num_prod+'" size="10" maxlength="50"/>'+
-            '     <b class="tooltip tooltip-bottom-right">Nombre del producto solicitado</b>'+
-            '    </label>'+
-            '</section>'+
-            '<section class="col col-3">'+
-            '    <label class="label">Commodity: </label>'+
-            '    <label class="input"><i class="icon-append fa fa-bars"></i>'+                
-            '    <input type="text" name="commodity'+num_prod+'" value="" class="validate[custom[onlyLetterNumber]] text-input" id="commodity'+num_prod+'" size="10" maxlength="50"/>'+
-            '     <b class="tooltip tooltip-bottom-right">Commity o Clasificaci&oacute;n del Producto</b>'+
-            '    </label>'+
-            '</section>'+
-            '<section class="col col-2">'+
-            '    <label class="label">Peso: </label>'+
-            '     <label class="input"><i class="icon-append fa fa-tag"></i>'+                
-            '    <input type="text" name="peso'+num_prod+'" value="" class="validate[custom[onlyLetterNumber]] text-input" id="peso'+num_prod+'" size="10" maxlength="50"/>'+                                 
-            '     <b class="tooltip tooltip-bottom-right">Peso del producto en KG</b>'+
-            '    </label>'+
-            '</section>'+
-            '<section class="col col-3">'+
-            '    <label class="label">Volumen: </label>'+
-            '    <label class="input"><i class="icon-append fa fa-cube"></i>'+                
-            '    <input type="text" name="volumen'+num_prod+'" value="" class="validate[custom[onlyLetterNumber]] text-input" id="volumen'+num_prod+'" size="10" maxlength="50"/>'+
-            '      <b class="tooltip tooltip-bottom-right">Volumen del producto en centimetros c&uacute;bicos</b>'+
-            '     </label>'+
-            ' </section>'+
+			'<section class="col col-2">'+
+			'	<label class="label">Producto: </label>'+
+			'	<label class="input"><i class="icon-append fa fa-tag"></i><input type="text" name="nombre'+num_prod+'" value="" class="validate[required,custom[onlyLetterNumber]] text-input" id="nombre'+num_prod+'" size="8" maxlength="50">'+
+			'	<b class="tooltip tooltip-bottom-right">Nombre del producto solicitado</b>'+
+			'	</label>'+
+			'</section>'+
+			'<section class="col col-2">'+
+			'	<label class="label">Número de Cont. en el BL: </label>'+
+			'		<label class="input"><i class="icon-append fa fa-bars"></i><input type="text" name="qty_contenedor'+num_prod+'" value="" class="validate[custom[onlyLetterNumber]] text-input" id="qty_contenedor'+num_prod+'" size="5" maxlength="30">'+
+			'	<b class="tooltip tooltip-bottom-right">Número de Contenedor en el BL</b>'+
+			'	</label>'+
+			'</section>'+
+			'<section class="col col-1">'+
+			'	<label class="label">Tipo Cont.:</label>'+
+			'	<label class="select"><i class="icon-append"></i><select name="tipo_contenedor'+num_prod+'" id="tipo_contenedor'+num_prod+'">'+
+			'													<option value="0" selected="selected">::Elegir::</option>'+
+			'													<option value="97">20 DC</option>'+
+			'													<option value="98">40 DC</option>'+
+			'													<option value="99">40 HC</option>'+
+			'													<option value="100">40 NOR</option>'+
+			'													</select>'+
+			'	</label>'+
+			'</section>'+
+			'<section class="col col-2">'+
+			'	<label class="label">No. Contenedor: </label>'+
+			'	<label class="input"><i class="icon-append fa fa-bars"></i><input type="text" name="commodity'+num_prod+'" value="" class="validate[custom[onlyLetterNumber]] text-input" id="commodity'+num_prod+'" size="10" maxlength="30">'+
+			'	<b class="tooltip tooltip-bottom-right">Número de Contenedor</b>'+
+			'	</label>'+
+			'</section>'+
+			'<section class="col col-2">'+
+			'	<label class="label">Peso: </label>'+
+			'	<label class="input"><i class="icon-append fa fa-tag"></i><input type="text" name="peso'+num_prod+'" value="" class="validate[custom[onlyLetterNumber]] text-input" id="peso'+num_prod+'" size="5" maxlength="30">'+
+			'	<b class="tooltip tooltip-bottom-right">Peso del producto en KG</b>'+
+			'	</label>'+
+			'</section>'+
+			'<section class="col col-2">'+
+			'	<label class="label">Tipo de Servicio: </label>'+
+			'	<label class="input"><i class="icon-append fa fa-cube"></i><input type="text" name="tipo_servicio'+num_prod+'" value="" class="validate[custom[onlyLetterNumber]] text-input" id="tipo_servicio'+num_prod+'" size="8" maxlength="30">'+
+			'	<b class="tooltip tooltip-bottom-right">Volumen del producto en centimetros cúbicos</b>'+
+			'	</label>'+
+			'</section>'+            
             ' <section class="col col-1"><img title="Eliminar producto" class="btnDelete" src="'+baseURL+'images/erase.png"></section>'+
             '</div>';                                                
 		
@@ -262,7 +320,7 @@ function addRowProd(baseURL) {
 
 		var ant_track = num_track - 1;		
 		$("#num_track").val(num_track);
-		$("#track"    ).append(myRow);		
+		$("#track"    ).prepend(myRow);		
 		$('#status'+num_track).append($('#status'+ant_track).html());
 		$('#hora_r'+num_track).html($('#hora_r'+ant_track).html());
 		
@@ -1015,17 +1073,21 @@ function traeDatosCotiAX(id_coti,baseURL){
                             "   <td width='3%' align='center'><input type='checkbox' name='"+ts+"ivaV"+i+"' id='"+ts+"ivaV"+i+"' value='1' "+ivaStr+" class='checBokFact' /> más iva</td>"+
                             "   <td width='7%' align='center'><img title='Eliminar Venta' class='"+ts+"btnDeleteCargo' src='"+baseURL+"images/erase.png'></td></tr>";                 
                           }
-                          else{
-                          numcostos++;
-                          y++;
-                          rowCostos = rowCostos+" <tr>"+
-                          "   <td width='30%' align='center'><label class='input'><i class='icon-append fa fa-bookmark'></i><input type='text' name='"+ts+"cargoC"+y+"' value='"+cargos[i]['cargo']+"'   class='validate[required,custom[onlyLetterNumber]] text-input' id='"+ts+"cargoC"+y+"'   size='22' maxlength='100' ts='"+ts+"' index='"+y+"'/></label></td>"+
-                          "   <td width='30%' align='center'><label class='input'><i class='icon-append fa fa-usd'></i><input type='text' name='"+ts+"importeC"+y+"'    value='"+cargos[i]['importe']+"' class='validate[required,custom[number]] text-input costos onlyNumber'    id='"+ts+"importeC"+y+"' size='8'  maxlength='12'   ts='"+ts+"' index='"+y+"'/></label></td>"+
-                          "   <td width='15%' align='center'><label class='input'><i class='icon-append fa fa-usd'></i><input type='text' name='"+ts+"unidadC"+y+"'     value='"+cargos[i]['unidad']+"'  class='validate[required,custom[number]] text-input unidadc onlyNumber'   id='"+ts+"unidadC"+y+"'  size='4'  maxlength='8'   ts='"+ts+"' index='"+y+"'/></label></td>"+
-                          "   <td width='15%' align='center'><span id='"+ts+"labelC"+y+"'></span><input type='hidden' name='"+ts+"subTotC"+y+"' value='"+cargos[i]['subtotal']+"' class='subCostos' id='"+ts+"subTotC"+y+"' /> </td>"+
-                          "   <td width='3%' align='center'><input type='checkbox' name='"+ts+"ivaC"+y+"' id='"+ts+"ivaC"+y+"' value='1' "+ivaStr+" class='checBokFact' /> más iva</td>"+
-                          "   <td width='7%' align='center'><img title='Eliminar Costo' class='"+ts+"btnDeleteCosto' src='"+baseURL+"images/erase.png'></td></tr>";
-                          }
+                          else{//COSTOS
+							numcostos++;
+							y++;
+							var checkUSD = cargos[i]['moneda'] == "USD" ? "checked='checked'" : "";
+							var checkMXN = cargos[i]['moneda'] == "MXN" ? "checked='checked'" : "";	
+							rowCostos = rowCostos+" <tr>"+
+							"   <td width='30%' align='center'><label class='input'><i class='icon-append fa fa-bookmark'></i><input type='text' name='"+ts+"cargoC"+y+"' value='"+cargos[i]['cargo']+"'   class='validate[required,custom[onlyLetterNumber]] text-input' id='"+ts+"cargoC"+y+"'   size='22' maxlength='100' ts='"+ts+"' index='"+y+"'/></label></td>"+
+							"   <td width='15%' align='center'><label class='input'><i class='icon-append fa fa-usd'></i><input type='text' name='"+ts+"importeC"+y+"'    value='"+cargos[i]['importe']+"' class='validate[required,custom[number]] text-input costos onlyNumber'    id='"+ts+"importeC"+y+"' size='8'  maxlength='12'   ts='"+ts+"' index='"+y+"'/></label></td>"+
+							"   <td width='10%' align='center'><label class='input'><i class='icon-append fa fa-usd'></i><input type='text' name='"+ts+"unidadC"+y+"'     value='"+cargos[i]['unidad']+"'  class='validate[required,custom[number]] text-input unidadc onlyNumber'   id='"+ts+"unidadC"+y+"'  size='4'  maxlength='8'   ts='"+ts+"' index='"+y+"'/></label></td>"+
+							"   <td width='10%' align='center'> <input type='radio' name='"+ts+"monedaC"+y+"' id='"+ts+"monedaC"+y+"' class='monedaC' value='USD' "+checkUSD+">USD&nbsp;&nbsp;<input type='radio' name='"+ts+"monedaC"+y+"' id='"+ts+"monedaC"+y+"' class='monedaC' value='MXN' "+checkMXN+">MXN </td>"+
+							"   <td width='10%' align='center'><label class='input'><i class='icon-append fa fa-usd'></i><input type='text' name='"+ts+"tipo_cambioC"+y+"' value='"+cargos[i]['tipo_cambio']+"' class='validate[required,custom[number]] text-input tipocambioc onlyNumber' id='"+ts+"tipo_cambioC"+y+"' size='4' maxlength='8' ts='"+ts+"' index='"+y+"'/></label></td>"+
+							"   <td width='10%' align='center'><span id='"+ts+"labelC"+y+"'></span><input type='hidden' name='"+ts+"subTotC"+y+"' value='"+cargos[i]['subtotal']+"' class='subCostos' id='"+ts+"subTotC"+y+"' /> </td>"+
+							"   <td width='10%' align='center'><input type='checkbox' name='"+ts+"ivaC"+y+"' id='"+ts+"ivaC"+y+"' value='1' "+ivaStr+" class='checBokFact' /> más iva</td>"+
+							"   <td width='5%'  align='center'><img title='Eliminar Costo' class='"+ts+"btnDeleteCosto' src='"+baseURL+"images/erase.png'></td></tr>";
+							}
                         }
                   
                           for (t = 0; t < numterminos; t++)
@@ -1046,12 +1108,12 @@ function traeDatosCotiAX(id_coti,baseURL){
                               " <td width='10%' align='center'><img title='Eliminar Termino' class='"+ts+"btnDeleteTermino' src='"+baseURL+"images/erase.png'></td></tr> ";
                           }
   
-              moneda       = isEmpty( bdModena ) == true ? response[x]['moneda']['moneda'] : bdModena ;
-                        tipoCambio   = isEmpty( bdTC     ) == true ? response[x]['moneda']['tipo_cambio'] : bdTC ;
+              			  moneda       = isEmpty( bdModena ) == true ? response[x]['moneda']['moneda'] : bdModena ;
+                          tipoCambio   = isEmpty( bdTC     ) == true ? response[x]['moneda']['tipo_cambio'] : bdTC ;
                           var bdETD    = $("#etdOperacion").val();
                           var bdETA    = $("#etaOperacion").val();
                           var valueETD = isEmpty( bdETD )==true ? response[x]['fechas'][0]['etd'] : bdETD;
-              var valueETA = isEmpty( bdETA )==true ? response[x]['fechas'][0]['eta'] : bdETA;
+              			  var valueETA = isEmpty( bdETA )==true ? response[x]['fechas'][0]['eta'] : bdETA;
               
                           rowFechas = "<label class='label'>ETD:</label>"+
                                             "<label class='input'><i class='icon-append fa fa-calendar'></i>"+
@@ -1065,14 +1127,14 @@ function traeDatosCotiAX(id_coti,baseURL){
                                             "</label> <div class='note' id='ttNoteEta'></div>";
   
                           myTable =         "<input type='hidden' name='"+ts+"numconceptos' id='"+ts+"numconceptos' value='"+numconceptos+"'/>"+                                          
-                        "<input type='hidden' name='"+ts+"numterminos'  id='"+ts+"numterminos'  value='"+numterminos+"'/>"+
-                        "<legend id='togDetalleServicio' class='pointer'>[<i class='fa fa-plus' id='imgDetalleServicio'> </i>] Servicio Cotizado </legend><br>"+
-                        "<div id='DetalleServicio'>"+
+											"<input type='hidden' name='"+ts+"numterminos'  id='"+ts+"numterminos'  value='"+numterminos+"'/>"+
+											"<legend id='togDetalleServicio' class='pointer'>[<i class='fa fa-plus' id='imgDetalleServicio'> </i>] Servicio Cotizado </legend><br>"+
+											"<div id='DetalleServicio'>"+
                                             "<table cellspacing='0' align='center' cellpadding='0' width='100%'>"+
                                             "<tr><td width='80%' align='center'>"+
                                             "<table id='terminos"+ts+"' cellspacing='0' align='center' cellpadding='0' width='100%'>"+
                                             "<tr><td width='100%' align='center' colspan='4' style='font-weight:bold; background-color:"+fondoFlete+"; color:#FFFFFF'>SERVICIO "+titulo+"</td></tr>"+
-                        "<tr><td width='75%' colspan='3' align='center'  style='font-weight:bold; background-color:#FFFFFF; color:#FFFFFF'></td>"+
+                        					"<tr><td width='75%' colspan='3' align='center'  style='font-weight:bold; background-color:#FFFFFF; color:#FFFFFF'></td>"+
                                             "<td width='25%' rowspan='"+(t+1)+"' valign='middle' align='center'> "+
                                             " <img class='"+ts+"nuevoTermino' title='Agregar concepto al servicio' src='"+baseURL+"images/new.png'/></td></tr>"
                                             + rowTerminos +
@@ -1082,43 +1144,48 @@ function traeDatosCotiAX(id_coti,baseURL){
                                             "<td width='10%' align='center'> "+
                                             " <img class='"+ts+"nuevoConcepto' title='Agregar concepto al servicio' src='"+baseURL+"images/new.png'/></td></tr>"
                                             + rowConceptos +
-                        "</table></br><br>"+
-                        "</td></tr></table>"+
-                        "</div>"+	
-                        "<input type='hidden' name='"+ts+"numcargos' id='"+ts+"numcargos' value='"+numcargos+"'/>"+
+											"</table></br><br>"+
+											"</td></tr></table>"+
+											"</div>"+	
+											"<input type='hidden' name='"+ts+"numcargos' id='"+ts+"numcargos' value='"+numcargos+"'/>"+
                                             "<input type='hidden' name='"+ts+"numcostos' id='"+ts+"numcostos' value='"+numcostos+"'/>"+
                                             "<table id='costos"+ts+"' cellspacing='0' align='center' cellpadding='0' width='100%'>"+
                                             " <tr>"+
-                                            " <td width='30%' align='center' style='font-weight:bold; background-color:"+fondoFlete+"; color:#FFFFFF'>CONCEPTO</td>"+
-                                            " <td width='30%' align='center' style='font-weight:bold; background-color:"+fondoFlete+"; color:#FFFFFF'>COSTO EN <span class='monedaSpan'>"+moneda+"</span></td>"+
-                        " <td width='15%' align='center' style='font-weight:bold; background-color:"+fondoFlete+"; color:#FFFFFF'>UNIDAD</td>"+
-                        " <td width='15%' align='center' style='font-weight:bold; background-color:"+fondoFlete+"; color:#FFFFFF'></td>"+
-                                            " <td width='10%' align='center' align='center'> "+
-                        " <img class='"+ts+"nuevoCosto' title='Agregar Costo al servicio' src='"+baseURL+"images/new.png'/></td></tr>"
-                        + rowCostos +
-                        "</table>"+
+											" <td width='30%' align='center' style='font-weight:bold; background-color:"+fondoFlete+"; color:#FFFFFF'>CONCEPTO</td>"+
+											" <td width='15%' align='center' style='font-weight:bold; background-color:"+fondoFlete+"; color:#FFFFFF'>COSTO</td>"+
+											" <td width='10%' align='center' style='font-weight:bold; background-color:"+fondoFlete+"; color:#FFFFFF'>UNIDAD</td>"+
+											" <td width='10%' align='center' style='font-weight:bold; background-color:"+fondoFlete+"; color:#FFFFFF'>MONEDA</td>"+
+											" <td width='10%' align='center' style='font-weight:bold; background-color:"+fondoFlete+"; color:#FFFFFF'>TIPO CAMBIO</td>"+
+											" <td width='10%' align='center' style='font-weight:bold; background-color:"+fondoFlete+"; color:#FFFFFF'></td>"+
+											" <td width='10%' align='center' style='font-weight:bold; background-color:"+fondoFlete+"; color:#FFFFFF'></td>"+
+											" <td width='5%'  align='center' align='center'> <img class='"+ts+"nuevoCosto' title='Agregar Costo al servicio' src='"+baseURL+"images/new.png'/></td> "+
+											" </tr>"
+											+ rowCostos +
+											"</table>"+
                                             " <table cellspacing='0' align='center' cellpadding='0' width='100%'><tr>"+
-                                            " <td width='30%' align='center' style='font-weight:bold;'></td>"+
-                                            " <td width='30%' align='center' style='font-weight:bold;' align='left'>TOTAL: <span id='costo_t_l_f' class='currency'></span> <span class='monedaSpan'></span></td>"+
                                             " <td width='15%' align='center' style='font-weight:bold;'></td>"+
-                                            " <td width='15%' align='center' style='font-weight:bold;'></td>"+
-                                            " <td width='10%' align='center' align='center'> </td></tr></table><br><br>"+
+                                            " <td width='30%' align='center' style='font-weight:bold;' align='left'>TOTAL: <span id='costo_t_l_f_usd' class='currency'></span> USD</td>"+
+											" <td width='30%' align='center' style='font-weight:bold;' align='left'>TOTAL: <span id='costo_t_l_f_mxn' class='currency'></span> MXN</td>"+
+                                            " <td width='15%' align='center' style='font-weight:bold;'></td>"+                                            
+                                            " <td width='10%' align='center' align='center'> </td></tr>"+
+											" </table><br><br>"+
                                             "<table id='cargos"+ts+"' cellspacing='0' align='center' cellpadding='0' width='100%'>"+
                                             " <tr>"+
                                             " <td width='30%' align='center' style='font-weight:bold; background-color:"+fondoFlete+"; color:#FFFFFF'>CONCEPTO</td>"+
                                             " <td width='30%' align='center' style='font-weight:bold; background-color:"+fondoFlete+"; color:#FFFFFF'>VENTA EN <span class='monedaSpan'>"+moneda+"</span></td>"+
-                        " <td width='15%' align='center' style='font-weight:bold; background-color:"+fondoFlete+"; color:#FFFFFF'>UNIDAD</td>"+
-                        " <td width='15%' align='center' style='font-weight:bold; background-color:"+fondoFlete+"; color:#FFFFFF'></td>"+
+                        					" <td width='15%' align='center' style='font-weight:bold; background-color:"+fondoFlete+"; color:#FFFFFF'>UNIDAD</td>"+
+                        					" <td width='15%' align='center' style='font-weight:bold; background-color:"+fondoFlete+"; color:#FFFFFF'></td>"+
                                             " <td width='10%' align='center' align='center'> "+
                                             " <img class='"+ts+"nuevoCargo' title='Agregar Venta al servicio' src='"+baseURL+"images/new.png'/></td></tr>"
                                             + rowCargos +				  
                                             "</table>"+
                                             " <table cellspacing='0' align='center' cellpadding='0' width='100%'><tr>"+
-                                            " <td width='30%' align='center' style='font-weight:bold;'></td>"+
-                                            " <td width='30%' align='center' style='font-weight:bold;' align='left'>TOTAL: <span id='venta_t_l_f' class='currency'></span> <span class='monedaSpan'></span></td>"+
                                             " <td width='15%' align='center' style='font-weight:bold;'></td>"+
+                                            " <td width='30%' align='center' style='font-weight:bold;' align='left'>TOTAL: <span id='venta_t_l_f_cur1' class='currency'></span> </td>"+
+                                            " <td width='30%' align='center' style='font-weight:bold;' align='left'>TOTAL: <span id='venta_t_l_f_cur2' class='currency'></span> </td>"+
                                             " <td width='15%' align='center' style='font-weight:bold;'></td>"+
-                                            " <td width='10%' align='center' align='center'> </td></tr></table>";  
+                                            " <td width='10%' align='center' align='center'> </td></tr>"+
+											"</table>";  
               
               $("#EtaEtd"     ).html(rowFechas);
               $("#servicio"+ts).html(myTable);
@@ -1150,8 +1217,8 @@ function traeDatosCotiAX(id_coti,baseURL){
             
                           habilitaBotonAgregarPedido(ts,baseURL);
                           habilitaBotonEliminar(ts,'btnDelete');
-              habilitaBotonEliminar(ts,'btnDeleteConcepto');
-              habilitaBotonEliminar(ts,'btnDeleteCosto');
+              			  habilitaBotonEliminar(ts,'btnDeleteConcepto');
+              			  habilitaBotonEliminar(ts,'btnDeleteCosto');
                           habilitaBotonEliminar(ts,'btnDeleteCargo');
                           habilitaBotonEliminar(ts,'btnDeleteTermino');
                           habilitaBotonEliminar(ts,'btnDeleteNota');    				   						
@@ -1164,17 +1231,21 @@ function traeDatosCotiAX(id_coti,baseURL){
                                      
                       habilitaCalculosVentasCostos();
                       $(".checBokFact").click(function (){ $("#fleteSalvado").val(0); }); 
-                      $('.esconderMN' ).show();
-                      $(".monedaSpan" ).html(moneda);
+                      $('.esconderMN' ).show();                      
                       $("#tipo_cambio").val(tipoCambio);                    
-                      if(moneda === "MXN"){
-                              $("#tipo_cambio"    ).attr('class','validate[custom[number]] text-input');
-                              $("input[value=MXN]").attr('checked',true);
-                              $("input[value=USD]").attr('checked',false);}
-                      else{
-                              $("input[value=USD]").attr('checked',true);
-                              $("input[value=MXN]").attr('checked',false);
-                              $("#tipo_cambio"    ).attr('class','validate[required,custom[number]] text-input');}
+                      if(moneda === "MXN")
+						{
+							$(".monedaSpan").html("MXN");
+                            $("#tipo_cambio").attr('class','validate[custom[number]] text-input');
+                            $("input:radio[name=moneda][value=MXN]").attr('checked',true);
+                            $("input:radio[name=moneda][value=USD]").attr('checked',false);
+						}
+                    else{
+							$(".monedaSpan").html("USD");
+                            $("input:radio[name=moneda][value=USD]").attr('checked',true);
+                            $("input:radio[name=moneda][value=MXN]").attr('checked',false);
+                            $("#tipo_cambio").attr('class','validate[required,custom[number]] text-input');
+						}
           }, 
           error: function(err)
           {
@@ -1341,14 +1412,18 @@ function habilitaBotonAgregarPedido(ts,baseURL)
     $("."+ts+"nuevoCosto").addClass('pointer');
     $("."+ts+"nuevoCosto").click(function()
       {
-       var nc = Number($("#"+ts+"numcostos").val()) + 1;                 
+       var nc    = Number($("#"+ts+"numcostos").val()) + 1;                 
        var myRow = " <tr>"+
-        "   <td width='30%' align='center'><label class='input'><i class='icon-append fa fa-bookmark'></i><input type='text' name='"+ts+"cargoC"+nc+"'   value=''  class='validate[required,custom[onlyLetterNumber]] text-input' id='"+ts+"cargoC"+nc+"'   size='22' maxlength='100' ts='"+ts+"' index='"+nc+"'/></label></td>"+
-        "   <td width='30%' align='center'><label class='input'><i class='icon-append fa fa-usd'></i>     <input type='text' name='"+ts+"importeC"+nc+"' value=''  class='validate[required,custom[number]] text-input costos onlyNumber'    id='"+ts+"importeC"+nc+"' size='8'  maxlength='12'  ts='"+ts+"' index='"+nc+"'/></label></td>"+
-        "   <td width='15%' align='center'><label class='input'><i class='icon-append fa fa-usd'></i> 	  <input type='text' name='"+ts+"unidadC"+nc+"'  value='1' class='validate[required,custom[number]] text-input unidadc onlyNumber'   id='"+ts+"unidadC"+nc+"'  size='8'  maxlength='8'   ts='"+ts+"' index='"+nc+"'/></label></td>"+
-        "   <td width='15%' align='center'><span id='"+ts+"labelC"+nc+"'></span><input type='hidden' name='"+ts+"subTotC"+nc+"' value='0' class='subCostos' id='"+ts+"subTotC"+nc+"' /> </td>"+
-        "   <td width='3%' align='center'><input type='checkbox' name='"+ts+"ivaC"+nc+"' id='"+ts+"ivaC"+nc+"' value='1' /> más iva</td>"+
-        "   <td width='7%'><img title='Eliminar Costo' class='"+ts+"btnDeleteCosto pointer' src='"+baseURL+"images/erase.png'></td></tr>";
+					"   <td width='30%' align='center'><label class='input'><i class='icon-append fa fa-bookmark'></i><input type='text' name='"+ts+"cargoC"+nc+"' value=''  class='validate[required,custom[onlyLetterNumber]] text-input' id='"+ts+"cargoC"+nc+"' size='22' maxlength='100' ts='"+ts+"' index='"+nc+"'/></label></td>"+
+					"   <td width='15%' align='center'><label class='input'><i class='icon-append fa fa-usd'></i><input type='text' name='"+ts+"importeC"+nc+"'    value=''  class='validate[required,custom[number]] text-input costos onlyNumber'    id='"+ts+"importeC"+nc+"' size='4'  maxlength='12'  ts='"+ts+"' index='"+nc+"'/></label></td>"+
+					"   <td width='10%' align='center'><label class='input'><i class='icon-append fa fa-usd'></i><input type='text' name='"+ts+"unidadC"+nc+"'     value=''  class='validate[required,custom[number]] text-input unidadc onlyNumber'   id='"+ts+"unidadC"+nc+"'  size='4'  maxlength='8'   ts='"+ts+"' index='"+nc+"'/></label></td>"+
+					"   <td width='10%' align='center'> <input type='radio' name='"+ts+"monedaC"+nc+"' class='monedaC' id='"+ts+"monedaC"+nc+"' value='USD'> USD&nbsp;&nbsp;<input type='radio' name='"+ts+"monedaC"+nc+"' class='monedaC' id='"+ts+"monedaC"+nc+"' value='MXN' checked='checked'> MXN </td>"+
+					"   <td width='10%' align='center'><label class='input'><i class='icon-append fa fa-usd'></i><input type='text' name='"+ts+"tipo_cambioC"+nc+"' value='1' class='validate[required,custom[number]] text-input tipocambioc onlyNumber' id='"+ts+"tipo_cambioC"+nc+"' size='4' maxlength='8' ts='"+ts+"' index='"+nc+"'/></label></td>"+
+					"   <td width='10%' align='center'><span id='"+ts+"labelC"+nc+"'></span><input type='hidden' name='"+ts+"subTotC"+nc+"' value='' class='subCostos' id='"+ts+"subTotC"+nc+"' /> </td>"+
+					"   <td width='10%' align='center'><input type='checkbox' name='"+ts+"ivaC"+nc+"' id='"+ts+"ivaC"+nc+"' value='1' class='checBokFact' /> más iva</td>"+
+					"   <td width='5%'  align='center'><img title='Eliminar Costo' class='"+ts+"btnDeleteCosto' src='"+baseURL+"images/erase.png'></td>"+
+					"</tr>";
+
        $("#costos"+ts+" tr:last").after(myRow);
        $("#"+ts+"numcostos").val(nc);
        habilitaBotonEliminar(ts,'btnDeleteCosto');	
@@ -1378,6 +1453,9 @@ function habilitaCalculosVentasCostos()
   $(".ventas" ).change(function(){ calculaSubTotal(this, "unidad" , "V"); calcularProfit(); });
   $(".unidadc").change(function(){ calculaSubTotal(this, "importe", "C"); calcularProfit(); });
   $(".unidadv").change(function(){ calculaSubTotal(this, "importe", "V"); calcularProfit(); });					
+
+  $(".tipocambioc").change(function(){ calcularProfit(); });
+  $(".monedaC"    ).click (function(){ calcularProfit(); });
   calcularProfit();
 }
 
@@ -1427,42 +1505,6 @@ function generaCotiPDFAX(baseURL)
     });	
 }
 
-
-function generaPrefacturaPDFAX(baseURL)		
-{	$('#id_pedidoFLET'    ).val($("#id_pedido").val());
-        $('#num_mblFLET'      ).val($("#num_mbl").val() );
-        $('#num_hblFLET'      ).val($("#num_hbl").val() );
-        $('#vessel_voyageFLET').val($("#vessel_voyage").val() );
-        $('#monedaFLET'       ).val($("#moneda").val() );
-        $('#rfcFLET'          ).val($("#rfc").val() );   
-       
-        $.ajax({                
-                url		  : baseURL+'pedido/generarPrefacturaPDFAX/',
-                type	  : 'post',
-				data	  : $('#FLET').serialize(),
-				dataType  : 'json',
-				beforeSend: function () 
-				{$("#generaPrefacturaPDF").html("<img src=\""+baseURL+"images/spin.png\"> Generando Archivo, espere por favor...");},
-                success:  function (response) 
-				{	
-					var	iconF="<a href=\""+baseURL+"pedido/downloadPF/"+response['preFactura']+ "\" target=\"_blank\">"
-							  +"<img title=\"Ver Prefactura generada con nombre "+response['preFactura']+"\" "
-							  +"  src=\""+baseURL+"images/logoPDF.png\" width='40px' height='40px'></a><br><br>"
-							  +"&nbsp;&nbsp;&nbsp;&nbsp;<img class=\"boton_confirm\" title=\"Borrar PreFactura\""
-							  +" id=\""+response['preFactura']+"\" src=\""+baseURL+"/images/erase.png\">";
-							  
-					$("#generaPrefacturaPDF").html(iconF);
-					
-					$('.boton_confirm').addClass('pointer');	
-					$('.boton_confirm').click(function() {var id= $(this).attr('id');
-                                                                              jConfirm("¿Borrar PreFactura en PDF?",titAlert, function(r) { if(r) { borraPFAX(baseURL,id); }
-                                                                                                                                          });						
-                                                                             });
-                }, 
-				error: function(err)
-				{ $("#generaPrefacturaPDF").html('');alert("Ha ocurrido un error al generarala Prefactura: " + err.status + " " + err.statusText); }
-        });	
-}
 
 
 function borraPFAX(baseURL,filename)
@@ -2266,14 +2308,26 @@ function paginarAX(controlador,numColGrid,currentPage,registrosPagina,baseURL)
                                         "deF8"     : $("#deF8").val(),
                                         "aF8"      : $("#aF8").val()
                                        }
-                                       :{"pagina"   : currentPage,
+                                       :((controlador=="cotizador")?
+									   {"pagina"   : currentPage,
+                                        "f1"       : $("#f1").val(),
+                                        "f2"       : $("#f2").val(),
+                                        "f3"       : $("#f3").val(),
+                                        "f4"       : $("#f4").val(),
+										"f5"       : $("#f5").val(),
+                                        "fechaIni" : $("#fechaIni").val(),
+                                        "fechaFin" : $("#fechaFin").val()
+                                        }
+										:
+									   	{"pagina"   : currentPage,
                                         "f1"       : $("#f1").val(),
                                         "f2"       : $("#f2").val(),
                                         "f3"       : $("#f3").val(),
                                         "f4"       : $("#f4").val(),
                                         "fechaIni" : $("#fechaIni").val(),
                                         "fechaFin" : $("#fechaFin").val()
-                                       };
+                                        }
+									   );
     if ( $.fn.dataTable.isDataTable( '#grid' ) ) 
 	   { dtGrid.destroy(); }
 
@@ -2329,8 +2383,8 @@ function paginarAX(controlador,numColGrid,currentPage,registrosPagina,baseURL)
                     case 'cotizador':                    
                         columna = '<tr>';
                         columna = columna + '<td align="center" width="5px">'+id+'</td>';
-                        columna = columna + '<td align="center">'+empty(registros[x]['fecha_alta'])+'</td>';
-                        columna = columna + '<td align="left">'+empty(registros[x]['prosp_nombre'])+'</td>';
+						columna = columna + '<td align="center">'+empty(registros[x]['id_coti'])+'</td>';
+                        columna = columna + '<td align="center">'+empty(registros[x]['fecha_alta'])+'</td>';                        
                         columna = columna + '<td align="left">'+empty(registros[x]['prosp_empresa'])+'</td>';
                         columna = columna + '<td align="left">'+empty(registros[x]['asunto'])+'</td>';
                         columna = columna + '<td align="left">'+empty(registros[x]['at'])+'</td>';                        
@@ -3481,8 +3535,9 @@ function openModalTimbrarAX(baseURL, id_pedido, rfc)
 						
 						/************ CONCEPTOS ************/							
 						$("#monedaSAT").val(resp['moneda']['moneda']);
-						$("#monedaSAT").combobox();
-						$("#tcSAT"    ).val(resp['moneda']['moneda']=="MXN"?1:resp['moneda']['tipo_cambio']);
+						$("#monedaSAT").combobox();											
+						var tcSATFac = resp['moneda']['moneda']=="MXN" ? 1 : resp['moneda']['tipo_cambio'];						
+						$("#tcSAT"    ).val(tcSATFac);
 						conceptosSAT = resp['conceptos'];
 					    
 						$('#conceptosSinCodSAT').html("");
@@ -3502,9 +3557,9 @@ function openModalTimbrarAX(baseURL, id_pedido, rfc)
 							$("#emailReceptor").val(resp['factura']['emailReceptor']);
 							$("#cpReceptor"   ).val(resp['factura']['cpReceptor']);	
 							
-							$("#monedaSAT").val(resp['factura']['moneda']);						
-							$("#tcSAT"    ).val(resp['factura']['tipocambio']);
-
+							$("#monedaSAT").val(resp['factura']['moneda']);
+							var tcSATFacVP = resp['factura']['moneda']=="MXN" ? 1 : resp['factura']['tipocambio'];						
+							$("#tcSAT"    ).val(tcSATFacVP);
 							
 							if ( resp['vistaprevia'] == "1" )
 							   { 	
@@ -3522,7 +3577,7 @@ function openModalTimbrarAX(baseURL, id_pedido, rfc)
 										var cfdiRel = 0;
 										$.each( resp['cfdiRel'], function(i, value) 
 											{  ++cfdiRel;
-												var	TRcfdirel = "<tr>  <td style='text-align:right' ><input type='checkbox' class='selCfdiRel' id='CfdiRel"+cfdiRel+"' name='CfdiRelSel"+cfdiRel+"' value='"+value['uuid']+"' checked> </td>"+
+												var	TRcfdirel = "<tr>  <td style='text-align:right' ><input type='checkbox' class='selCfdiRel' id='CfdiRel"+cfdiRel+"' name='CfdiRelSel"+cfdiRel+"' value='"+value['uuid_relacionado']+"' checked> </td>"+
 																		"<td style='text-align:left'  ><small>"+value['folio']+"</small> </td>"+
 																		"<td style='text-align:left'  ><small>"+value['uuid_relacionado']+"</small> </td>"+
 																		"<td style='text-align:left'  ><small><a href='"+value["adjunto"]+"' target='_blank'> <img title='Factura' src='"+$("#baseURL").val()+"images/logoPDF.png' width='18px' height='18px'> <small>PDF</small> </a></small> </td>"+
@@ -3926,20 +3981,17 @@ function calcularTotFacturas()
 
   $(".importeCargoSAT").each(function() { v_subtotalSAT = v_subtotalSAT + Number($(this).val()); });
 
-  $(".sumaIva").each(function() { v_subTotIVASAT = v_subTotIVASAT + Number($(this).val()); });
+  $(".sumaIva").each(function() { v_subTotIVASAT = v_subTotIVASAT + Number($(this).val());
+								  v_IVA_imp 	 = v_IVA_imp + ( truncaA2Decimales(v_IVA_por * Number($(this).val())) );																		
+								});
 
   v_subtotalSAT = v_subtotalSAT - (v_subtotalSAT * (v_Desc_por/100));
   v_subTotIVASAT= v_subTotIVASAT- (v_subTotIVASAT* (v_Desc_por/100));
-
   v_Desc_imp	= v_subtotalSAT;
-
-  v_IVA_imp = v_IVA_por * v_subTotIVASAT;  
-
+  
   v_subtotalSAT = truncaA2Decimales(v_subtotalSAT);
-  v_IVA_imp 	= truncaA2Decimales(v_IVA_imp);
-  v_totSAT  	= v_subtotalSAT + v_IVA_imp;
+  v_totSAT  	= v_subtotalSAT +v_IVA_imp;
   lbl_IvaNoCon	= (v_IVA_imp==0?" <small>(conceptos sin IVA)</small>":"");
-
   
   $("#subtotalSATLbl").html("$"+$.number(v_subtotalSAT,2, '.', ',' ) );
   $("#ivaSATLbl"	 ).html("$"+$.number(v_IVA_imp,2, '.', ',' )+lbl_IvaNoCon );
@@ -3951,8 +4003,9 @@ function calcularTotFacturas()
   $("#ivaSAT"	  ).val(v_IVA_imp.toFixed(2) );
   $("#totalSAT"	  ).val(v_totSAT.toFixed(2) );
   $("#saldoInsolutoFac").val( v_totSAT.toFixed(2) );
-  
+
 }
+
 function truncaA2Decimales(monto)
 {	
 	var truncated = Math.floor(monto * 100) / 100;

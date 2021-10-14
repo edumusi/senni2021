@@ -76,13 +76,11 @@ class Md_rastreo extends CI_Model {
 	
 	public function traeRastreoPor($num_guia)
     {
-		$this->db->select('c.opcion_catalogo as status, r.descripcion, r.observaciones, r.id_hora, r.status_track, r.noti_track,
-		                  r.status as id_status');
+		$this->db->select('r.status, r.descripcion, r.observaciones, r.id_hora, r.status_track, r.noti_track');
 		$this->db->select("DATE_FORMAT(`r`.`fecha_hora`,'%d/%m/%Y') as fecha, 
 						   DATE_FORMAT(`r`.`fecha_hora`,'%d/%m/%Y %H:%i:%s') as fecha_hora", FALSE);
-        $this->db->where('r.num_guia',$num_guia);
-        $this->db->join('catalogo c', 'c.id_opcion = r.status','left outer');        
-        $this->db->order_by("r.status","asc");		
+        $this->db->where('r.num_guia',$num_guia);        
+        $this->db->order_by("r.id_rastreo","desc");		
         $query = $this->db->get('rastreo r');
 						
         if($query->num_rows() > 0 )      

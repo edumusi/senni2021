@@ -236,10 +236,56 @@ class CI_Controller {
             }
             elseif($param["controlador"]=='usuario')
             { $filtrosTbl = $filtrosTbl.''; }
+            elseif($param["controlador"]=='cotizador')
+            {   $filtrosTbl = $filtrosTbl."<div class='row'>
+                                             <section class='col col-3'>
+                                                        <label class='label'>&nbsp;</label>
+                                                        <label class='input'>
+                                                                <i class='icon-append fa ".$param["f5Image"]."'></i>".
+                                                                form_input(array('class'       => 'text-input', 
+                                                                                'name'        => 'f5', 
+                                                                                'id'          => 'f5',
+                                                                                'placeholder' => $param["f5Label"],                                                         
+                                                                                'maxlength'   => '30'))."                                        
+                                                        </label>
+                                            </section>
+                                            <section class='col col-3'>
+                                                    <label class='label'>Fecha de Alta</label>
+                                                    <label class='input'>
+                                                            <i class='icon-append fa fa-calendar'></i>".
+                                                           form_input(array('class'     => ' text-input datepicker', 
+                                                                                'name'      => 'fechaIni', 
+                                                                                'id'        => 'fechaIni',
+                                                                                'value'     =>  '',
+                                                                                'size'      =>  '8',
+                                                                                'placeholder' => "De:",
+                                                                                'maxlength' => '20'))."                                         
+                                                    </label>
+                                            </section>
+                                            <section class='col col-3'>
+                                                    <label class='label'>&nbsp;</label>
+                                                    <label class='input'>
+                                                            <i class='icon-append fa fa-calendar'></i>".
+                                                           form_input(array('class'     => ' text-input datepicker', 
+                                                                                'name'      => 'fechaFin', 
+                                                                                'id'        => 'fechaFin',
+                                                                                'value'     =>  '',
+                                                                                'size'      =>  '8',
+                                                                                'placeholder' => "Hasta:",
+                                                                                'maxlength' => '20'))."                                         
+                                                    </label>
+                                            </section>";
+             $filtrosTbl = $filtrosTbl."<section class='col col-3'>
+                                                    <label class='label'>".$param["f4Label"]."</label>
+                                                    <label class='select'>".form_dropdown('f4',$param["f4Select"],"0",'id="f4"')." 
+                                                    <i></i>                             
+                                                    </label>
+                                        </section>"; 
+             
+             $filtrosTbl = $filtrosTbl."</div>";
+            }
             else
-            {
-                
-                $filtrosTbl = $filtrosTbl."<div class='row'>
+            {   $filtrosTbl = $filtrosTbl."<div class='row'>
                                             <section class='col col-4'>
                                                     <label class='label'>Fecha de Alta</label>
                                                     <label class='input'>
@@ -272,7 +318,8 @@ class CI_Controller {
                                                     <label class='select'>".form_dropdown('f4',$param["f4Select"],"0",'id="f4"')." 
                                                     <i></i>                             
                                                     </label>
-                                        </section>"; }
+                                        </section>"; 
+             }
              $filtrosTbl = $filtrosTbl."</div>";
             }
             $filtrosTbl = $filtrosTbl."<div class='row'>".

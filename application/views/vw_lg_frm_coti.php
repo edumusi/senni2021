@@ -72,7 +72,7 @@
 <?php  
 	echo form_open(base_url().'cotizador/guardar/', array('class' => 'sky-form', 'id' => 'coti'));
         echo '<fieldset>'
-        . '     <header>Prospecto</header><br>';
+        . '     <header><center><strong>NÚMERO COTIZACIÓN '.$id_coti.'</strong></center></header><br>';
         
 	echo form_input(array('name' => 'id_coti' ,'type' => 'hidden',  'id' => 'id_coti' ,'value' => $id_coti));
 	echo form_input(array('name' => 'coti_pdf','type'  => 'hidden', 'id' => 'coti_pdf','value' => null));

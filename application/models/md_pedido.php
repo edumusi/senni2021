@@ -456,7 +456,7 @@ public function delete_pedido_adjunto($id_pedido,$id_adjunto)
             $this->db->insert('pedido_conceptos',$data);
     }
 	
-	public function insert_pedido_cargo($cargo,$importe,$unidad,$subtotal,$tipo,$iva,$tipo_servicio,$status,$id_pedido)
+	public function insert_pedido_cargo($cargo,$importe,$unidad,$subtotal,$moneda,$tc,$tipo,$iva,$tipo_servicio,$status,$id_pedido)
     {
         $data = array(
             'id_pedido'     =>   $id_pedido,
@@ -467,6 +467,8 @@ public function delete_pedido_adjunto($id_pedido,$id_adjunto)
             'tipo'   		=>   $tipo,
 			'iva'   		=>   $iva,
             'status'   		=>   $status,
+            'moneda'   		=>   $moneda,
+            'tipo_cambio'  	=>   $tc,
             'tipo_servicio' =>   $tipo_servicio								
             );
             $this->db->insert('pedido_cargos',$data);

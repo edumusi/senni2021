@@ -9,14 +9,16 @@ class Md_producto extends CI_Model {
 					
 	
 
-    public function insert_producto($id_pedido,$nombre,$commodity,$peso,$volumen)
+    public function insert_producto($id_pedido,$nombre,$qty_contenedor,$tipo_contenedor,$commodity,$peso,$tipo_servicio)
     {
         $data = array(
-            'id_pedido'        =>   $id_pedido,
-            'nombre'           =>   $nombre,
-            'commodity'  	   =>   $commodity,
-            'peso'         	   =>   $peso,
-            'volumen'          =>   $volumen
+            'id_pedido'        => $id_pedido,
+            'nombre'           => $nombre,
+            'qty_contenedor'   => $qty_contenedor,
+            'tipo_contenedor'  => $tipo_contenedor,
+            'commodity'  	   => $commodity,
+            'peso'         	   => $peso,
+            'tipo_servicio'    => $tipo_servicio
             );
 			
         $this->db->insert('productos',$data);

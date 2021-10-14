@@ -35,7 +35,7 @@ class Md_cotizador extends CI_Model {
         
     }
  
-    public function traeCotiFiltros($registros_x_pagina,$offset,$f1,$f2,$f3,$f4,$fechaIni,$fechaFin)
+    public function traeCotiFiltros($registros_x_pagina,$offset,$f1,$f2,$f3,$f4, $f5,$fechaIni,$fechaFin)
     {                   
         $off  = (($offset-1) * $registros_x_pagina);
          
@@ -50,6 +50,8 @@ class Md_cotizador extends CI_Model {
             { $this -> db -> or_like(array('co.asunto' => $f3)); }
         if (!empty($f4))
             { $this -> db -> or_like(array('co.atentamente' => $f4)); }
+        if (!empty($f5))
+            { $this -> db -> or_like(array('co.id_coti' => $f5)); }
         if (!empty($fechaIni) & !empty($fechaFin))
             { $this->db->where("`co`.`fecha_alta` BETWEEN '$fechaIni' AND '$fechaFin'",NULL, FALSE ); }  
         
@@ -57,8 +59,8 @@ class Md_cotizador extends CI_Model {
 	$conteo = $query[0]->conteo;				
 
         $this->db->select('co.id_coti,co.prosp_nombre,co.prosp_empresa,co.asunto, co.prosp_tel, co.prosp_correo');
-	$this->db->select("DATE_FORMAT(`co`.`fecha_alta`,'%d/%m/%Y %H:%i:%s') as fecha_alta,
-			   CONCAT(`u`.`titulo`,' ',`u`.`nombre`,' ',`u`.`apellidos`) as at", FALSE);
+	$this->db->select("DATE_FORMAT(`co`.`fecha_alta`,'%d/%m/%Y') as fecha_alta,
+			            CONCAT(`u`.`titulo`,' ',`u`.`nombre`,' ',`u`.`apellidos`) as at", FALSE);
 	$this->db->join('usuarios u', 'co.atentamente = u.correo','inner outer');        
         if (!empty($f1))
             { $this -> db -> or_like(array('co.prosp_nombre' => $f1)); }
@@ -68,6 +70,8 @@ class Md_cotizador extends CI_Model {
             { $this -> db -> or_like(array('co.asunto' => $f3)); }
         if (!empty($f4))
             { $this -> db -> or_like(array('co.atentamente' => $f4)); }
+        if (!empty($f5))
+            { $this -> db -> or_like(array('co.id_coti' => $f5)); }
         if (!empty($fechaIni) & !empty($fechaFin))
             { $this->db->where("`co`.`fecha_alta` BETWEEN '$fechaIni' AND '$fechaFin'",NULL, FALSE ); }  
             

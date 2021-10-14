@@ -50,7 +50,7 @@ private function validaSS()
 public function generarPDFAX()
 {
  try
- {
+ {date_default_timezone_set('America/Mexico_City');
 	$this->load->helper('date');
 	$this->load->library('Pdf');
 	$this->load->helper( 'file');
@@ -239,7 +239,7 @@ public function download($filename)
 public function nuevo()
 {
  try{
-	 		
+	date_default_timezone_set('America/Mexico_City');
 	$this->validaSS();
 	$this->load->helper('date');
 	
@@ -273,7 +273,7 @@ public function nuevo()
 
 public function clonar($id_coti=0)
 {
-try{
+try{date_default_timezone_set('America/Mexico_City');
 	$this->validaSS();
 	$this->load->helper('date');
 	
@@ -304,7 +304,7 @@ try{
 
 public function editar($id_coti=0)
 {
-try{
+try{date_default_timezone_set('America/Mexico_City');
 	$this->validaSS();
 	$this->load->helper('date');
 	
@@ -335,7 +335,7 @@ try{
 	
 public function guardar()
 {
- try{		
+ try{date_default_timezone_set('America/Mexico_City');
 	$this->validaSS();
 	
 	$this->load->helper('date');	
@@ -461,7 +461,7 @@ public function index()
         $this->validaSS();
 	
 	$param = array("titulo"          => "Bandeja de Cotizaciones ",
-                       "colBandeja"      => array('','Fecha Alta','A nombre de','Empresa','Asunto','Atendido Por','Acciones'),
+                       "colBandeja"      => array('','Num Cotización','Fecha Alta','Empresa','Asunto','Atendido Por','Acciones'),
                        "registrosPagina" => $this->registros_x_pagina,
                        "controlador"     => "cotizador",
                        "numColGrid"      => "7",
@@ -475,6 +475,8 @@ public function index()
                        "f4Label"         => "Atendido por",
                        "f4Image"         => "fa-user",
                        "f4Select"        => $this->md_usuario->traeAdmin(),
+					   "f5Label"         => "Num Cotización",
+                       "f5Image"         => "fa fa-tags",
                        "accion"          => "nuevo",
                        "tipo"            => "prospecto de Cotizaci&oacute;n",
 					   "mensajeConfirm"  => ""
@@ -494,10 +496,11 @@ public function index()
             $f2       = $this -> input -> post('f2');
             $f3       = $this -> input -> post('f3');
             $f4       = $this -> input -> post('f4');
+			$f5       = $this -> input -> post('f5');
             $fechaIni = $this -> input -> post('fechaIni');
             $fechaFin = $this -> input -> post('fechaFin');
                          
-            $grid = $this -> md_cotizador -> traeCotiFiltros($this->registros_x_pagina,$pagina,$f1,$f2,$f3,$f4,$fechaIni,$fechaFin);            
+            $grid = $this -> md_cotizador -> traeCotiFiltros($this->registros_x_pagina,$pagina,$f1,$f2,$f3,$f4,$f5,$fechaIni,$fechaFin);            
             
             echo json_encode ($grid);                          
             
@@ -664,7 +667,7 @@ public function traeDatosCotiAX()
           if ($llave != 0 & $llave <= 66)
           {
             $coti_conceptos = $this -> md_cotizador -> traeDetalleCotiPedido($llave,$id_pedido,"pedido_conceptos","id_pedido","concepto, descripcion, tipo_servicio"     ,$id_coti,"coti_conceptos","id_coti","concepto, descripcion, tipo_servicio");
-            $coti_cargos    = $this -> md_cotizador -> traeDetalleCotiPedido($llave,$id_pedido,"pedido_cargos"   ,"id_pedido","cargo, importe, iva, costo, unidad, tipo, subtotal, tipo_servicio, status",$id_coti,"coti_cargos"   ,"id_coti","cargo, importe,('VENTA') as tipo, (1) as unidad, iva, (importe*0) as costo,(importe) as subtotal, tipo_servicio,('') as status");
+            $coti_cargos    = $this -> md_cotizador -> traeDetalleCotiPedido($llave,$id_pedido,"pedido_cargos"   ,"id_pedido","cargo, importe, iva, costo, unidad, tipo, subtotal, tipo_servicio,status, moneda, tipo_cambio",$id_coti,"coti_cargos"   ,"id_coti","cargo, importe,('VENTA') as tipo, (1) as unidad, iva, (importe*0) as costo,(importe) as subtotal, tipo_servicio,('') as status,('') as moneda,('') as tipo_cambio");
             $coti_terminos  = $this -> md_cotizador -> traeDetalleCotiPedido($llave,$id_pedido,"pedido_terminos" ,"id_pedido","termino, descripcion, tipo_servicio"      ,$id_coti,"coti_terminos" ,"id_coti","termino, descripcion, tipo_servicio");
 			$moneda         = $this -> md_cotizador -> traeMonedaCoti($id_coti);
 			$tc 	        = $this -> md_cotizador -> traeTCCoti($id_coti);
